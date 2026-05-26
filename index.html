@@ -2,327 +2,129 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>YouTube Downloader - Vídeos e Músicas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Downloader Local</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
         body {
-            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0a0a0f;
+            font-family: 'Segoe UI', sans-serif;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
-            padding: 2rem 1rem;
-            color: #fff;
-        }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
+            margin: 0;
+            padding: 20px;
         }
         .card {
-            background: rgba(20, 20, 35, 0.8);
-            backdrop-filter: blur(10px);
-            border-radius: 32px;
+            background: #15151c;
+            border-radius: 24px;
             padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
         }
         h1 {
-            font-size: 2rem;
             text-align: center;
-            background: linear-gradient(135deg, #fff, #ff0000);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 0.5rem;
-        }
-        .sub {
-            text-align: center;
-            color: #aaa;
-            margin-bottom: 2rem;
-            font-size: 0.9rem;
+            color: #ff0000;
         }
         .input-group {
             display: flex;
-            gap: 12px;
-            margin-bottom: 1.5rem;
+            gap: 10px;
+            margin: 20px 0;
             flex-wrap: wrap;
         }
         input {
             flex: 1;
-            padding: 14px 20px;
-            border-radius: 60px;
+            padding: 12px;
+            border-radius: 40px;
             border: 1px solid #333;
-            background: #1e1e2a;
+            background: #1e1e24;
             color: white;
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.2s;
-        }
-        input:focus {
-            border-color: #ff0000;
-            box-shadow: 0 0 0 2px rgba(255,0,0,0.3);
         }
         button {
             background: #ff0000;
             border: none;
-            padding: 0 28px;
-            border-radius: 60px;
+            padding: 12px 24px;
+            border-radius: 40px;
             font-weight: bold;
-            color: white;
             cursor: pointer;
-            font-size: 1rem;
-            transition: transform 0.1s;
         }
-        button:active { transform: scale(0.97); }
         .format-group {
             display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 1.5rem;
-        }
-        .format-group label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            padding: 8px 16px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 40px;
-        }
-        .loading {
-            display: none;
-            text-align: center;
-            margin: 1rem 0;
-            color: #ff5555;
-        }
-        .results {
-            display: none;
-            margin-top: 2rem;
-            background: rgba(0,0,0,0.5);
-            border-radius: 24px;
-            padding: 1.5rem;
-        }
-        .video-details {
-            display: flex;
             gap: 20px;
-            flex-wrap: wrap;
-            margin-bottom: 1.5rem;
-            align-items: center;
+            justify-content: center;
+            margin: 15px 0;
         }
-        .thumbnail {
-            width: 120px;
+        .status {
+            margin-top: 20px;
+            padding: 10px;
             border-radius: 12px;
+            background: #1e1e24;
+            text-align: center;
         }
-        .info h3 { font-size: 1.1rem; margin-bottom: 5px; }
-        .info p { color: #aaa; font-size: 0.8rem; }
-        .quality-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 1rem 0;
+        .success {
+            color: #0f0;
         }
-        .quality-btn {
-            background: #2a2a35;
+        .error {
+            color: #f00;
+        }
+        .download-link {
+            display: inline-block;
+            margin-top: 10px;
+            background: #0f0;
+            color: #000;
             padding: 8px 16px;
             border-radius: 40px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: 0.1s;
-            border: 1px solid #444;
-        }
-        .quality-btn:hover {
-            background: #ff0000;
-            color: white;
-        }
-        .fallback-links {
-            margin-top: 1.5rem;
-            padding-top: 1rem;
-            border-top: 1px solid #333;
-            text-align: center;
-        }
-        .fallback-links a {
-            color: #ff8888;
-            margin: 0 8px;
             text-decoration: none;
-        }
-        footer {
-            text-align: center;
-            margin-top: 2rem;
-            font-size: 0.7rem;
-            color: #666;
-        }
-        @media (max-width: 600px) {
-            .card { padding: 1.5rem; }
-            .input-group button { width: 100%; margin-top: 8px; }
-            .format-group { flex-direction: column; align-items: center; gap: 10px; }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="card">
-        <h1>🎬 YouTube Downloader</h1>
-        <div class="sub">Baixe vídeos (MP4) ou extraia áudio (MP3)</div>
-
-        <div class="input-group">
-            <input type="text" id="urlInput" placeholder="Cole o link do YouTube (ex: https://youtu.be/... ou https://www.youtube.com/watch?v=...)" autocomplete="off">
-            <button id="fetchBtn">🔍 Analisar</button>
-        </div>
-
-        <div class="format-group">
-            <label><input type="radio" name="format" value="mp4" checked> 🎥 Vídeo (MP4)</label>
-            <label><input type="radio" name="format" value="mp3"> 🎵 Áudio (MP3)</label>
-        </div>
-
-        <div class="loading" id="loading">
-            <i class="fas fa-circle-notch fa-spin"></i> Obtendo informações, aguarde...
-        </div>
-
-        <div class="results" id="results">
-            <div class="video-details" id="videoDetails"></div>
-            <div id="qualities"></div>
-            <div id="downloadArea"></div>
-            <div class="fallback-links">
-                ⚠️ Se os downloads diretos não funcionarem, use os sites alternativos:<br>
-                <a href="#" id="loaderToLink" target="_blank">loader.to</a> |
-                <a href="#" id="y2mateLink" target="_blank">y2mate.nu</a> |
-                <a href="#" id="saveFromLink" target="_blank">savefrom.net</a>
-            </div>
-        </div>
+<div class="card">
+    <h1>📥 YouTube Downloader</h1>
+    <div class="format-group">
+        <label><input type="radio" name="format" value="mp4" checked> 🎥 Vídeo (MP4)</label>
+        <label><input type="radio" name="format" value="mp3"> 🎵 Áudio (MP3)</label>
     </div>
-    <footer>
-        🔒 Apenas para uso pessoal e educativo. Respeite os direitos autorais.<br>
-        O download direto pode falhar dependendo da sua região – use os sites alternativos.
-    </footer>
+    <div class="input-group">
+        <input type="text" id="url" placeholder="Cole a URL do YouTube">
+        <button id="downloadBtn">Baixar</button>
+    </div>
+    <div id="status" class="status">Aguardando...</div>
 </div>
 
 <script>
-    // ==================== API PÚBLICA (funciona via proxy CORS) ====================
-    // Usamos a API do ytdl-api (gratuita) com fallback para outro serviço
-    const API_ENDPOINT = 'https://ytdl-server-9g0c.onrender.com/api/info';
-    // Fallback API
-    const FALLBACK_API = 'https://yt-api.alexandrem.dev/api/info';
-
-    document.getElementById('fetchBtn').addEventListener('click', fetchVideo);
-    document.getElementById('urlInput').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') fetchVideo();
-    });
-
-    async function fetchVideo() {
-        const url = document.getElementById('urlInput').value.trim();
+    document.getElementById('downloadBtn').addEventListener('click', async () => {
+        const url = document.getElementById('url').value.trim();
         if (!url) {
-            alert('Por favor, cole uma URL do YouTube.');
+            alert('Digite uma URL');
             return;
         }
-
         const format = document.querySelector('input[name="format"]:checked').value;
-        const loadingDiv = document.getElementById('loading');
-        const resultsDiv = document.getElementById('results');
-        const videoDetailsDiv = document.getElementById('videoDetails');
-        const qualitiesDiv = document.getElementById('qualities');
-        const downloadArea = document.getElementById('downloadArea');
-
-        resultsDiv.style.display = 'none';
-        qualitiesDiv.innerHTML = '';
-        downloadArea.innerHTML = '';
-        videoDetailsDiv.innerHTML = '';
-        loadingDiv.style.display = 'block';
-
-        // Prepara os links alternativos (abrem em nova aba)
-        const loaderTo = `https://loader.to/pt/youtube-downloader.html?url=${encodeURIComponent(url)}`;
-        const y2mate = `https://y2mate.nu/en-o76/?url=${encodeURIComponent(url)}`;
-        const saveFrom = `https://pt.savefrom.net/1-youtube-video-downloader-1/`;
-        document.getElementById('loaderToLink').href = loaderTo;
-        document.getElementById('y2mateLink').href = y2mate;
-        document.getElementById('saveFromLink').href = saveFrom;
-
+        const statusDiv = document.getElementById('status');
+        statusDiv.innerHTML = '⏳ Processando, aguarde...';
+        statusDiv.className = 'status';
+        
         try {
-            // Tenta a API principal
-            let response = await fetch(API_ENDPOINT, {
+            const response = await fetch('/download', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url: url, format: format })
+                body: JSON.stringify({ url, format })
             });
-
-            let data;
-            if (!response.ok) {
-                // Tenta fallback
-                response = await fetch(`${FALLBACK_API}?url=${encodeURIComponent(url)}`);
-                if (!response.ok) throw new Error('Falha nas APIs');
-                data = await response.json();
+            const data = await response.json();
+            if (data.success) {
+                statusDiv.innerHTML = `✅ Download concluído! <a href="${data.downloadPath}" class="download-link" download>Clique para salvar</a>`;
+                statusDiv.classList.add('success');
             } else {
-                data = await response.json();
+                statusDiv.innerHTML = `❌ Erro: ${data.error}`;
+                statusDiv.classList.add('error');
             }
-
-            console.log('Dados recebidos:', data);
-
-            // Exibir thumbnail e título
-            const thumb = data.thumbnail || (data.videoDetails?.thumbnails?.[0]?.url) || '';
-            const title = data.title || data.videoDetails?.title || 'Sem título';
-            const author = data.author || data.videoDetails?.author?.name || 'Desconhecido';
-            const duration = data.duration || data.videoDetails?.lengthSeconds || '';
-
-            videoDetailsDiv.innerHTML = `
-                <img src="${thumb}" class="thumbnail" alt="thumbnail">
-                <div class="info">
-                    <h3>${escapeHtml(title)}</h3>
-                    <p>👤 ${escapeHtml(author)}</p>
-                    <p>⏱️ ${duration} segundos</p>
-                </div>
-            `;
-
-            // Obter formatos
-            let formats = [];
-            if (format === 'mp4') {
-                formats = data.formats?.filter(f => f.hasVideo && f.hasAudio) || [];
-            } else {
-                formats = data.formats?.filter(f => f.hasAudio && !f.hasVideo) || [];
-            }
-
-            if (formats.length === 0) {
-                qualitiesDiv.innerHTML = '<p>⚠️ Nenhum formato disponível. Tente os sites alternativos abaixo.</p>';
-            } else {
-                qualitiesDiv.innerHTML = `<strong>📥 Escolha a qualidade:</strong><div class="quality-list"></div>`;
-                const list = qualitiesDiv.querySelector('.quality-list');
-                formats.forEach(f => {
-                    const btn = document.createElement('div');
-                    btn.className = 'quality-btn';
-                    const label = format === 'mp4' ? (f.qualityLabel || f.quality || 'MP4') : (f.audioBitrate || '128kbps');
-                    btn.textContent = `${label} (${f.container || 'mp4'})`;
-                    btn.addEventListener('click', () => {
-                        const downloadUrl = f.url;
-                        if (downloadUrl) {
-                            downloadArea.innerHTML = `<a href="${downloadUrl}" class="download-link" download style="display:inline-block; background:#0f0; color:#000; padding:10px 20px; border-radius:40px; text-decoration:none; font-weight:bold;">⬇️ Baixar ${label}</a>`;
-                        } else {
-                            downloadArea.innerHTML = '<p>❌ URL de download indisponível. Use os sites alternativos.</p>';
-                        }
-                    });
-                    list.appendChild(btn);
-                });
-            }
-
-            resultsDiv.style.display = 'block';
-        } catch (error) {
-            console.error(error);
-            videoDetailsDiv.innerHTML = `<p style="color:#ff6666;">❌ Erro: ${error.message}<br>Os servidores podem estar sobrecarregados. Use os botões abaixo.</p>`;
-            resultsDiv.style.display = 'block';
-        } finally {
-            loadingDiv.style.display = 'none';
+        } catch (err) {
+            statusDiv.innerHTML = `❌ Erro de conexão: ${err.message}`;
+            statusDiv.classList.add('error');
         }
-    }
-
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
+    });
 </script>
 </body>
 </html>
