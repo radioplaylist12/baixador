@@ -10,7 +10,6 @@
       padding: 0;
       box-sizing: border-box;
     }
-
     :root {
       --bg: #0a0a0f;
       --surface: #15151c;
@@ -21,19 +20,16 @@
       --border: #2a2a2a;
       --success: #0f0;
     }
-
     body {
       background: var(--bg);
       font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
       color: var(--text);
       padding: 2rem 1rem;
     }
-
     .container {
       max-width: 800px;
       margin: 0 auto;
     }
-
     h1 {
       font-size: 2rem;
       text-align: center;
@@ -43,7 +39,6 @@
       color: transparent;
       margin-bottom: 1rem;
     }
-
     .sub {
       text-align: center;
       color: var(--text-muted);
@@ -54,7 +49,6 @@
       margin-left: auto;
       margin-right: auto;
     }
-
     .card {
       background: var(--surface);
       border-radius: 24px;
@@ -62,14 +56,12 @@
       border: 1px solid var(--border);
       box-shadow: 0 8px 20px rgba(0,0,0,0.5);
     }
-
     .input-group {
       display: flex;
       gap: 12px;
       margin-bottom: 1rem;
       flex-wrap: wrap;
     }
-
     input {
       flex: 1;
       padding: 14px 18px;
@@ -81,12 +73,10 @@
       outline: none;
       transition: 0.2s;
     }
-
     input:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 2px rgba(255,0,0,0.3);
     }
-
     button {
       background: var(--primary);
       border: none;
@@ -98,58 +88,49 @@
       transition: 0.1s;
       font-size: 1rem;
     }
-
     button:active {
       transform: scale(0.97);
     }
-
     .format-group {
       margin: 1.5rem 0;
       display: flex;
       gap: 20px;
       justify-content: center;
     }
-
     .format-group label {
       display: flex;
       align-items: center;
       gap: 8px;
       cursor: pointer;
     }
-
     .loading {
       display: none;
       text-align: center;
       margin: 1rem 0;
       color: var(--primary);
     }
-
     .results {
       margin-top: 2rem;
       display: none;
     }
-
     .title-details {
       background: #1a1a22;
       padding: 12px;
       border-radius: 16px;
       margin-bottom: 1rem;
     }
-
     .thumbnail {
       width: 100%;
       max-width: 200px;
       border-radius: 12px;
       margin-top: 10px;
     }
-
     .quality-list {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       margin-top: 1rem;
     }
-
     .quality-btn {
       background: #2a2a35;
       padding: 8px 16px;
@@ -159,12 +140,10 @@
       transition: 0.1s;
       border: 1px solid var(--border);
     }
-
     .quality-btn:hover {
       background: var(--primary);
       color: white;
     }
-
     .download-link {
       display: inline-block;
       background: var(--success);
@@ -175,14 +154,12 @@
       text-decoration: none;
       font-weight: bold;
     }
-
     footer {
       text-align: center;
       margin-top: 3rem;
       color: var(--text-muted);
       font-size: 0.75rem;
     }
-
     @media (max-width: 600px) {
       .input-group { flex-direction: column; }
       button { padding: 12px; width: 100%; }
@@ -218,22 +195,12 @@
   </div>
 
   <footer>
-    ⚡ Funciona via servidor proxy para contornar restrições do YouTube. <br>
-    Apenas para uso pessoal – respeite os direitos autorais.
+    ⚡ Funciona via API pública (yt-api.alexandrem.dev). Se falhar, tente outro link ou use a segunda opção com backend próprio.
+    <br>Respeite os direitos autorais – apenas para uso pessoal.
   </footer>
 </div>
 
 <script>
-  // ============================================================
-  // SERVIDOR PROXY PÚBLICO (substitua por seu próprio backend se desejar)
-  // ATENÇÃO: Este proxy é apenas para demonstração. Para uso real,
-  // recomenda-se hospedar seu próprio backend com ytdl-core.
-  // ============================================================
-  const PROXY_API = 'https://ytdl-server-9g0c.onrender.com/api/info'; // Exemplo de endpoint público (pode parar de funcionar)
-
-  // Caso o proxy público esteja offline, você pode usar uma API local ou outro serviço.
-  // Aqui usaremos uma abordagem híbrida: primeiro tenta o proxy, depois mostra instruções.
-
   document.getElementById('fetchBtn').addEventListener('click', fetchVideo);
   document.getElementById('videoUrl').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') fetchVideo();
@@ -253,7 +220,6 @@
     const downloadArea = document.getElementById('downloadArea');
     const videoDetails = document.getElementById('videoDetails');
 
-    // Reset UI
     resultsDiv.style.display = 'none';
     qualitiesDiv.innerHTML = '';
     downloadArea.innerHTML = '';
@@ -261,19 +227,15 @@
     loadingDiv.style.display = 'block';
 
     try {
-      // 1. Enviar requisição para o servidor proxy
-      const response = await fetch(PROXY_API, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: url, format: format })
-      });
-
-      if (!response.ok) throw new Error('Falha na comunicação com o servidor');
+      // Usando API pública gratuita
+      const apiUrl = `https://yt-api.alexandrem.dev/api/info?url=${encodeURIComponent(url)}`;
+      const response = await fetch(apiUrl);
+      if (!response.ok) throw new Error('Falha na comunicação com a API');
 
       const data = await response.json();
       console.log(data);
 
-      // Exibir detalhes do vídeo
+      // Exibir detalhes
       videoDetails.innerHTML = `
         <strong>🎬 Título:</strong> ${data.title}<br>
         <strong>⏱️ Duração:</strong> ${data.duration}<br>
@@ -282,7 +244,7 @@
       `;
 
       if (format === 'mp4') {
-        // Exibir opções de qualidade (vídeo)
+        // Vídeo – formatos com vídeo e áudio
         const formats = data.formats.filter(f => f.hasVideo && f.hasAudio);
         if (formats.length === 0) {
           qualitiesDiv.innerHTML = '<p>Nenhum formato de vídeo disponível.</p>';
@@ -292,15 +254,15 @@
           formats.forEach(f => {
             const btn = document.createElement('div');
             btn.className = 'quality-btn';
-            btn.textContent = `${f.qualityLabel} (${f.container})`;
+            btn.textContent = `${f.qualityLabel || f.quality} (${f.container})`;
             btn.addEventListener('click', () => {
-              downloadArea.innerHTML = `<a href="${f.url}" class="download-link" download>Baixar ${f.qualityLabel} MP4</a>`;
+              downloadArea.innerHTML = `<a href="${f.url}" class="download-link" download>Baixar ${f.qualityLabel || f.quality} MP4</a>`;
             });
             list.appendChild(btn);
           });
         }
       } else {
-        // Modo MP3 – mostrar opções de áudio
+        // Áudio – apenas áudio
         const audioFormats = data.formats.filter(f => f.hasAudio && !f.hasVideo);
         if (audioFormats.length === 0) {
           qualitiesDiv.innerHTML = '<p>Nenhum formato de áudio disponível.</p>';
@@ -322,7 +284,7 @@
       resultsDiv.style.display = 'block';
     } catch (error) {
       console.error(error);
-      videoDetails.innerHTML = `<p style="color: #ff4444;">❌ Erro ao processar o vídeo: ${error.message}<br><br>💡 Dica: Tente usar um link diferente ou verifique sua conexão.</p>`;
+      videoDetails.innerHTML = `<p style="color: #ff4444;">❌ Erro ao processar o vídeo: ${error.message}<br><br>💡 Dica: Tente um link diferente ou aguarde alguns segundos. Se persistir, a API pública pode estar sobrecarregada – use a Solução 2 (backend próprio) ou sites alternativos como y2mate.nu.</p>`;
       resultsDiv.style.display = 'block';
     } finally {
       loadingDiv.style.display = 'none';
